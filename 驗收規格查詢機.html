@@ -1,0 +1,175 @@
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>料號驗收規格查詢機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        select, input[type="text"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result div {
+            margin-bottom: 15px;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+        }
+        .comparison div {
+            width: 48%;
+        }
+        img {
+            max-width: 100%;
+            max-height: 300px;
+        }
+        .footer {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>料號驗收規格查詢機</h2>
+        
+        <label for="partNumber">選擇或輸入料號:</label>
+        <select id="partNumber" onchange="showInputField()">
+            <option value="">請選擇料號</option>
+            <option value="001">料號 001</option>
+            <option value="002">料號 002</option>
+            <option value="003">料號 003</option>
+        </select>
+        
+        <div id="manualInput" style="display:none;">
+            <label for="customPartNumber">或自行輸入料號:</label>
+            <input type="text" id="customPartNumber" placeholder="輸入料號">
+        </div>
+
+        <button onclick="querySpecifications()">查詢</button>
+
+        <div class="result" id="resultContainer" style="display:none;">
+            <h3>查詢結果</h3>
+            <div id="partInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        // 顯示手動輸入欄位
+        function showInputField() {
+            const partNumberSelect = document.getElementById("partNumber");
+            const manualInput = document.getElementById("manualInput");
+            if (partNumberSelect.value === "") {
+                manualInput.style.display = "block";
+            } else {
+                manualInput.style.display = "none";
+            }
+        }
+
+        // 根據選擇的料號顯示相對應的資料
+        function querySpecifications() {
+            const partNumber = document.getElementById("partNumber").value || document.getElementById("customPartNumber").value;
+            
+            // 假設這裡可以根據料號查詢相對應的資料，這個資料可以來自Excel檔案或其他資料庫。
+            const specs = {
+                '001': {
+                    '料號': '001',
+                    '料名': '料名 A',
+                    '允收規格': 'images/高麗菜去外葉1.jpg', // 圖片路徑
+                    '允收說明': '單顆重量>1kg，單顆直徑>15cm。單籃上述規格者之重量符合率≧該籃重量80%。',
+                    '拒收規格': 'images/reject1.jpg',
+                    '拒收說明': '這是拒收規格的詳細說明。',
+                    '允收外觀': 'images/高麗菜去外葉2.jpg',
+                    '允收外觀說明': '這是允收外觀的詳細說明。',
+                    '拒收外觀': 'images/reject_appearance1.jpg',
+                    '拒收外觀說明': '這是拒收外觀的詳細說明。',
+                    '性狀定義': '定義 A',
+                    '抽樣限度': '限度 A'
+                },
+                '002': {
+                    '料號': '002',
+                    '料名': '料名 B',
+                    '允收規格': 'images/image2.jpg',
+                    '允收說明': '這是允收規格的詳細說明。',
+                    '拒收規格': 'images/reject2.jpg',
+                    '拒收說明': '這是拒收規格的詳細說明。',
+                    '允收外觀': 'images/appearance2.jpg',
+                    '允收外觀說明': '這是允收外觀的詳細說明。',
+                    '拒收外觀': 'images/reject_appearance2.jpg',
+                    '拒收外觀說明': '這是拒收外觀的詳細說明。',
+                    '性狀定義': '定義 B',
+                    '抽樣限度': '限度 B'
+                },
+                '003': {
+                    '料號': '003',
+                    '料名': '料名 C',
+                    '允收規格': 'images/image3.jpg',
+                    '允收說明': '這是允收規格的詳細說明。',
+                    '拒收規格': 'images/reject3.jpg',
+                    '拒收說明': '這是拒收規格的詳細說明。',
+                    '允收外觀': 'images/appearance3.jpg',
+                    '允收外觀說明': '這是允收外觀的詳細說明。',
+                    '拒收外觀': 'images/reject_appearance3.jpg',
+                    '拒收外觀說明': '這是拒收外觀的詳細說明。',
+                    '性狀定義': '定義 C',
+                    '抽樣限度': '限度 C'
+                }
+            };
+
+            // 根據料號顯示結果
+            const partInfo = specs[partNumber] || { '料號': '未找到資料', '料名': '未找到資料', '允收規格': '', '允收說明': '未找到資料' };
+
+            const resultContainer = document.getElementById('resultContainer');
+            const partInfoDiv = document.getElementById('partInfo');
+            
+            partInfoDiv.innerHTML = `
+                <p><strong>料號:</strong> ${partInfo['料號']}</p>
+                <p><strong>料名:</strong> ${partInfo['料名']}</p>
+                
+                <div class="comparison">
+                    <div>
+                        <div><strong>允收規格:</strong></div>
+                        <img src="${partInfo['允收規格']}" alt="允收規格圖片">
+                        <p>${partInfo['允收說明']}</p>
+
+                        <div><strong>允收外觀:</strong></div>
+                        <img src="${partInfo['允收外觀']}" alt="允收外觀圖片">
+                        <p>${partInfo['允收外觀說明']}</p>
+                    </div>
+                    <div>
+                        <div><strong>拒收規格:</strong></div>
+                        <img src="${partInfo['拒收規格']}" alt="拒收規格圖片">
+                        <p>${partInfo['拒收說明']}</p>
+
+                        <div><strong>拒收外觀:</strong></div>
+                        <img src="${partInfo['拒收外觀']}" alt="拒收外觀圖片">
+                        <p>${partInfo['拒收外觀說明']}</p>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <div><strong>性狀定義:</strong> ${partInfo['性狀定義']}</div>
+                    <div><strong>抽樣限度:</strong> ${partInfo['抽樣限度']}</div>
+                </div>
+            `;
+            
+            resultContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
