@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
@@ -61,7 +62,7 @@
             <input type="text" id="customPartNumber" placeholder="輸入料號">
         </div>
 
-        <button onclick="querySpecifications()">查詢</button>
+        <button type="button" onclick="querySpecifications()">查詢</button>
 
         <div class="result" id="resultContainer" style="display:none;">
             <h3>查詢結果</h3>
@@ -83,9 +84,16 @@
 
         // 根據選擇的料號顯示相對應的資料
         function querySpecifications() {
+            console.log("查詢按鈕被點擊");
+
             const partNumber = document.getElementById("partNumber").value || document.getElementById("customPartNumber").value;
             
-            // 假設這裡可以根據料號查詢相對應的資料，這個資料可以來自Excel檔案或其他資料庫。
+            if (!partNumber) {
+                alert("請選擇或輸入料號！");
+                return;
+            }
+
+            // 模擬資料（假設來自資料庫或外部文件）
             const specs = {
                 '001': {
                     '料號': '001',
@@ -132,15 +140,14 @@
             };
 
             // 根據料號顯示結果
-            const partInfo = specs[partNumber] || { '料號': '未找到資料', '料名': '未找到資料', '允收規格': '', '允收說明': '未找到資料' };
+            const partInfo = specs[partNumber] || { '料號': '未找到資料', '料名': '未找到資料', '允收規格': '無資料', '允收說明': '無資料' };
 
+            // 更新結果區塊
             const resultContainer = document.getElementById('resultContainer');
             const partInfoDiv = document.getElementById('partInfo');
-            
             partInfoDiv.innerHTML = `
                 <p><strong>料號:</strong> ${partInfo['料號']}</p>
                 <p><strong>料名:</strong> ${partInfo['料名']}</p>
-                
                 <div class="comparison">
                     <div>
                         <div><strong>允收規格:</strong></div>
@@ -161,13 +168,12 @@
                         <p>${partInfo['拒收外觀說明']}</p>
                     </div>
                 </div>
-                
                 <div class="footer">
                     <div><strong>性狀定義:</strong> ${partInfo['性狀定義']}</div>
                     <div><strong>抽樣限度:</strong> ${partInfo['抽樣限度']}</div>
                 </div>
             `;
-            
+
             resultContainer.style.display = 'block';
         }
     </script>
